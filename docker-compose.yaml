@@ -1,0 +1,43 @@
+version: '3'
+services:
+  user:
+    build:
+      context: ./userService
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user_database
+  re-app:
+    build:
+      context: ./realEstateService
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      - property_database
+      - mongo
+  user_database:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: users
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3306:3306"
+  property_database:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: realEstates
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3307:3306"
+  mongo:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_DATABASE: realEstateservice_database_images
+    ports:
+      - "27017:27017"
